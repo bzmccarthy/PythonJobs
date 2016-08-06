@@ -5,27 +5,65 @@ collate and clean those results to figure out the most relevant
 skills needed and present them to the user
 '''
 
-import indeed
+from indeed import IndeedClient
+
+PUBLISHER_ID = 8263932719076827
+
+PARAMS = {
+    'q' : "python",
+    'l' : "19067",
+    'userip' : "1.2.3.4",
+    'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)"}
 
 def main():
 
-    all_jobs = search_indeed(publisher_id, params)
-    jobs_list = extract_ids(all_jobs)
-    jobs_list = add_snippets(jobs_list)
-    jobs_list = snippets_to_list(jobs_list)
-    jobs_list = clean_snippets(jobs_list)
-    term_frequencies = find_term_freq(jobs_list)
+    client = setup_client(PUBLISHER_ID)
+
+    all_jobs = search_indeed(client, PARAMS)
+    jobs_list = process_all_jobs(all_jobs)
+    term_frequencies = analyze_results(jobs_list)
 
     present_results(term_frequencies)
 
-publisher_id = 8263932719076827
+def setup_client(publisher_id):
 
-params = {
-    'q' : "python",
-    'l' : "austin",
-    'userip' : "1.2.3.4",
-    'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)"
-}
+    client = IndeedClient(publisher_id)
+
+    return client
+
+def search_indeed(publisher_id, params):
+
+    all_jobs = []
+
+    num_total_results = find_total_results(publisher_id, params)
+
+    for i in range(num_total_results):
+        all_jobs.append(get_jobs(start, params))
+
+    return all_jobs
+
+def process_all_jobs(all_jobs):
+
+    jobs_list = {}
+
+    for job in all_jobs:
+
+        extract_id
+        add_snippet
+        snippet_to_list
+        clean_snippet
+
+def analyze_results(jobs_list):
+
+    find_frequencies
+
+    return term_frequencies
+
+def find_total_results(client, params):
+
+    
+
+    pass
 
 if __name__ == '__main__':
     main()
