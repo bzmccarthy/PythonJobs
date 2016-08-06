@@ -4,11 +4,12 @@ most common skills in those listings """
 
 import unittest
 
-class ConnectToHTTP(unittest.TestCase):
+class ConnectToAPI(unittest.TestCase):
 
-    def test_connects_to_indeed_api(self):
+    def test_correct_publisher_id_entered(self):
 
-        '''script should successfully connect to API'''
+        '''script should successfully send publisher ID
+           to Ineed API'''
 
         self.assertTrue(True)
 

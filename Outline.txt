@@ -1,0 +1,13 @@
+1. Enter Publisher ID into Indeed API
+2. Search for ALL applicable Python jobs in the area and collect the results
+3. Extract the job IDs from all of those results
+4. Use the job IDs to connect to Indeed API and get 'snippet' for each job, collect those together
+5. Scrape those job snippets to make each word into an entry in a list
+6. Remove special characters
+7. Make everything lowercase
+8. Remove stopwords and common terms
+9. Form a set of each list to remove duplicate words
+10. Count how many total job listings were scraped
+11. Find the frequency of the terms in those listings (# listings where term appears/# of total listings)
+
+Possibly do some data munging by combining like terms (consider C and C++ the same thing? Or TDD and test-driven design.  Things like that).
