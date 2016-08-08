@@ -21,6 +21,7 @@ def main():
     client = setup_client(PUBLISHER_ID)
     num_results, list_of_results = search_indeed(client, PARAMS)
     jobs_list = process_all_jobs(list_of_results)
+    print(jobs_list)
     term_frequencies = analyze_results(jobs_list)
     present_results(term_frequencies)
 
@@ -60,10 +61,29 @@ def process_all_jobs(list_of_results):
         jobs_list[job['jobkey']]={}
         jobs_list[job['jobkey']]['title'] = job['jobtitle']
         jobs_list[job['jobkey']]['title_plus_snippet'] = job['jobtitle'] + ' ' + job['snippet']
-        '''snippet_to_list
-        clean_snippet'''
+        jobs_list[job['jobkey']]['title_plus_snippet'] = jobs_list[job['jobkey']]['title_plus_snippet'].split()
+        jobs_list[job['jobkey']]['title_plus_snippet'] = clean_snippet(jobs_list[job['jobkey']]['title_plus_snippet'])
 
     return jobs_list
+
+def clean_snippet(title_snip_list):
+
+    cleaned_list = [word.lower().strip() for word in title_snip_list]
+    cleaned_list = [word.replace(',','') for word in cleaned_list]
+    cleaned_list = [word.replace('.','') for word in cleaned_list]
+    cleaned_list = [word.replace('|','') for word in cleaned_list]
+    cleaned_list = [word.replace('(','') for word in cleaned_list]
+    cleaned_list = [word.replace(')','') for word in cleaned_list]
+    cleaned_list = [word.replace('*','') for word in cleaned_list]
+    cleaned_list = [word.replace('<b>','') for word in cleaned_list]
+    cleaned_list = [word.replace('</b>','') for word in cleaned_list]
+    cleaned_list = [word.replace(':','') for word in cleaned_list]
+    cleaned_list = [word.replace('+','') for word in cleaned_list]
+    cleaned_list = [word.replace('-','') for word in cleaned_list]
+    cleaned_list = [word.replace('\\','') for word in cleaned_list]
+    cleaned_list = [word.replace('/','') for word in cleaned_list]
+
+    return cleaned_list
 
 def analyze_results(jobs_list):
 

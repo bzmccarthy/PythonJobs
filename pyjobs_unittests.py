@@ -58,6 +58,73 @@ class ProcessAllJobs(unittest.TestCase):
         self.assertIn(self.test_key, self.jobs_list)
         self.assertIn('title', self.jobs_list[self.test_key])
         self.assertIn('title_plus_snippet', self.jobs_list[self.test_key])
+
+    def test_process_jobs_title_plus_snippet_is_list(self):
+
+        self.assertIsInstance(self.jobs_list[self.test_key]['title_plus_snippet'], list)
+
+class CleanSnippetWorks(unittest.TestCase):
+
+    def setUp(self):
+
+        self.test_list = ['AAAAA', 'a,-.\\a.++/,:a,</b><b>*()||']
+
+    def test_words_are_made_lowercase(self):
+
+        self.assertTrue(PythonJobs.clean_snippet(self.test_list)[0].islower())
+
+    def test_whether_comma_stripped(self):
+
+        self.assertNotIn(',',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_period_stripped(self):
+
+        self.assertNotIn('.',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_pipe_stripped(self):
+
+        self.assertNotIn('|',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_left_paren_stripped(self):
+
+        self.assertNotIn('(',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_right_paren_stripped(self):
+
+        self.assertNotIn(')',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_star_stripped(self):
+
+        self.assertNotIn('*',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_bold_stripped(self):
+
+        self.assertNotIn('<b>',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_bold_end_stripped(self):
+
+        self.assertNotIn('</b>',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_colon_stripped(self):
+
+        self.assertNotIn(':',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_plus_stripped(self):
+
+        self.assertNotIn('+',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_dash_stripped(self):
+
+        self.assertNotIn('-',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_forslah_stripped(self):
+
+        self.assertNotIn('/',PythonJobs.clean_snippet(self.test_list)[1])
+
+    def test_whether_backslash_stripped(self):
+
+        self.assertNotIn('\\',PythonJobs.clean_snippet(self.test_list)[1])
+
         
 if __name__ == '__main__':
     unittest.main()
