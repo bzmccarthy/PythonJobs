@@ -13,16 +13,15 @@ PARAMS = {
     'q' : "python",
     'l' : "19067",
     'userip' : "1.2.3.4",
+    'limit' : 25,
     'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)"}
 
 def main():
 
     client = setup_client(PUBLISHER_ID)
-
-    all_jobs = search_indeed(client, PARAMS)
-    jobs_list = process_all_jobs(all_jobs)
+    num_results, list_of_results = search_indeed(client, PARAMS)
+    jobs_list = process_all_jobs(list_of_results)
     term_frequencies = analyze_results(jobs_list)
-
     present_results(term_frequencies)
 
 def setup_client(publisher_id):
@@ -31,39 +30,46 @@ def setup_client(publisher_id):
 
     return client
 
-def search_indeed(publisher_id, params):
+def search_indeed(client, params):
 
-    all_jobs = []
+    list_of_results = []
+    search_response = client.search(**params)
 
-    num_total_results = find_total_results(publisher_id, params)
+    num_results = search_response['totalResults']
 
-    for i in range(num_total_results):
-        all_jobs.append(get_jobs(start, params))
+    for i in range(1,num_results+1,25):
 
-    return all_jobs
+        params['start']=i
 
-def process_all_jobs(all_jobs):
+        search_response = client.search(**params)
+        results = search_response['results']
+
+        if i <= num_results-25:
+            list_of_results += results
+        else:
+            list_of_results += results[:num_results-i+1]
+
+    return num_results, list_of_results
+
+def process_all_jobs(list_of_results):
 
     jobs_list = {}
 
-    for job in all_jobs:
+    for job in list_of_results:
 
-        extract_id
-        add_snippet
-        snippet_to_list
-        clean_snippet
+        jobs_list[job['jobkey']]={}
+        jobs_list[job['jobkey']]['title'] = job['jobtitle']
+        jobs_list[job['jobkey']]['title_plus_snippet'] = job['jobtitle'] + ' ' + job['snippet']
+        '''snippet_to_list
+        clean_snippet'''
+
+    return jobs_list
 
 def analyze_results(jobs_list):
 
     find_frequencies
 
     return term_frequencies
-
-def find_total_results(client, params):
-
-    
-
-    pass
 
 if __name__ == '__main__':
     main()

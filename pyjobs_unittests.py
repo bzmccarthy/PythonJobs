@@ -6,30 +6,69 @@ import unittest
 import PythonJobs
 import indeed
 
-
-PUBLISHER_ID = 8263932719076827
-
-PARAMS = {
-            'q' : "python",
-            'l' : "19067",
-            'userip' : "1.2.3.4",
-            'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)"}
-
 class SetupAPI(unittest.TestCase):
+
+    def setUp(self):
+
+        self.client = PythonJobs.setup_client(PythonJobs.PUBLISHER_ID)
 
     def test_setup_returns_client_object(self):
 
         '''setup_client should return indeed.IndeedClient object'''
 
-        self.assertEqual(type(PythonJobs.setup_client(PUBLISHER_ID)),indeed.IndeedClient)
+        self.assertEqual(type(self.client),indeed.IndeedClient)
 
 class SearchJobsAPI(unittest.TestCase):
 
-    def test_total_results_returns_a_value(self):
+    def setUp(self):
 
-        '''job search results should return a value'''
+        self.client = PythonJobs.setup_client(PythonJobs.PUBLISHER_ID)
+        self.num_results, self.list_of_results = PythonJobs.search_indeed(self.client, PythonJobs.PARAMS)
 
-        self.assertTrue(PythonJobs.find_total_results(PUBLISHER_ID, PARAMS))
+    def test_search_indeed_retuns_total_results_as_int(self):    
 
+        self.assertIsInstance(self.num_results, int)
+
+    def test_search_indeed_returns_list_of_results_as_list(self):
+        
+        self.assertIsInstance(self.list_of_results, list)
+
+    def test_search_indeed_len_of_list_equals_num_results(self):
+
+        self.assertEqual(len(self.list_of_results), self.num_results)
+
+class ProcessAllJobs(unittest.TestCase):
+
+    def setUp(self):
+
+        self.client = PythonJobs.setup_client(PythonJobs.PUBLISHER_ID)
+        self.num_results, self.list_of_results = PythonJobs.search_indeed(self.client, PythonJobs.PARAMS)
+        self.jobs_list = PythonJobs.process_all_jobs(self.list_of_results)
+
+        for key in self.jobs_list.keys():
+
+            self.test_key = key
+
+    def test_process_jobs_returns_list(self):
+
+        self.assertIsInstance(self.jobs_list, dict)
+
+    def test_process_jobs_returns_correct_items_in_list(self):
+
+        self.assertIn(self.test_key, self.jobs_list)
+        self.assertIn('title', self.jobs_list[self.test_key])
+        self.assertIn('title_plus_snippet', self.jobs_list[self.test_key])
+        
 if __name__ == '__main__':
     unittest.main()
+
+
+
+
+
+
+
+
+
+
+
