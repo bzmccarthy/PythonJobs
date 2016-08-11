@@ -21,9 +21,20 @@ def main():
     client = setup_client(PUBLISHER_ID)
     num_results, list_of_results = search_indeed(client, PARAMS)
     jobs_list = process_all_jobs(list_of_results)
-    print(jobs_list)
+    jobs_list = only_python_jobs(jobs_list)
+    #Tested up to this point
+   
     term_frequencies = analyze_results(jobs_list)
     present_results(term_frequencies)
+
+def print_first_job(jobs_list):
+
+    for key in jobs_list.keys():
+        counter = 0
+
+        if counter < 1:
+            print(jobs_list[key])
+            break
 
 def setup_client(publisher_id):
 
@@ -66,22 +77,31 @@ def process_all_jobs(list_of_results):
 
     return jobs_list
 
+def only_python_jobs(jobs_list):
+
+    new_list = dict((job, jobs_list[job]) for job in jobs_list if 'python' in jobs_list[job]['title'].lower())
+
+    """for job in jobs_list:
+
+        if 'python' in jobs_list[job]['title']:
+            del(jobs_list[job])"""
+
+    return new_list
+
+def analyze_results(jobs_list):
+
+    return term_frequencies
+
 def clean_snippet(title_snip_list):
 
+    bad_chars = (",",".","|","(",")","*",":"
+                 ,"+","-","/","<b>","</b>",
+                 "\\")
+
     cleaned_list = [word.lower().strip() for word in title_snip_list]
-    cleaned_list = [word.replace(',','') for word in cleaned_list]
-    cleaned_list = [word.replace('.','') for word in cleaned_list]
-    cleaned_list = [word.replace('|','') for word in cleaned_list]
-    cleaned_list = [word.replace('(','') for word in cleaned_list]
-    cleaned_list = [word.replace(')','') for word in cleaned_list]
-    cleaned_list = [word.replace('*','') for word in cleaned_list]
-    cleaned_list = [word.replace('<b>','') for word in cleaned_list]
-    cleaned_list = [word.replace('</b>','') for word in cleaned_list]
-    cleaned_list = [word.replace(':','') for word in cleaned_list]
-    cleaned_list = [word.replace('+','') for word in cleaned_list]
-    cleaned_list = [word.replace('-','') for word in cleaned_list]
-    cleaned_list = [word.replace('\\','') for word in cleaned_list]
-    cleaned_list = [word.replace('/','') for word in cleaned_list]
+
+    for char in bad_chars:
+        cleaned_list = [word.replace(char,'') for word in cleaned_list]
 
     return cleaned_list
 
