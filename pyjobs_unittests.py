@@ -6,6 +6,8 @@ import unittest
 import PythonJobs
 import indeed
 
+from collections import Counter
+
 class SetupAPI(unittest.TestCase):
 
     def setUp(self):
@@ -106,7 +108,21 @@ class ReturnOnlyPythonJobs(unittest.TestCase):
 
         for job in self.jobs_list:
 
-            self.assertIn('python', self.jobs_list[job]['title'].lower()) 
+            self.assertIn('python', self.jobs_list[job]['title'].lower())
+
+class AnalyzeResults(unittest.TestCase):
+
+    def setUp(self):
+
+        self.client = PythonJobs.setup_client(PythonJobs.PUBLISHER_ID)
+        self.num_results, self.list_of_results = PythonJobs.search_indeed(self.client, PythonJobs.PARAMS)
+        self.jobs_list = PythonJobs.process_all_jobs(self.list_of_results)
+        self.jobs_list = PythonJobs.only_python_jobs(self.jobs_list)
+        self.term_frequencies = PythonJobs.analyze_results(self.jobs_list)
+
+    def test_analysis_returns_a_Counter_object(self):
+
+        self.assertIsInstance(self.term_frequencies, Counter)
         
 if __name__ == '__main__':
     unittest.main()

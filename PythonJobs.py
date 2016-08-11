@@ -6,12 +6,13 @@ skills needed and present them to the user
 '''
 
 from indeed import IndeedClient
+from collections import Counter
 
 PUBLISHER_ID = 8263932719076827
 
 PARAMS = {
     'q' : "python",
-    'l' : "19067",
+    'l' : "10010",
     'userip' : "1.2.3.4",
     'limit' : 25,
     'useragent' : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2)"}
@@ -24,8 +25,8 @@ def main():
     jobs_list = only_python_jobs(jobs_list)
     #Tested up to this point
    
-    term_frequencies = analyze_results(jobs_list)
-    present_results(term_frequencies)
+    word_counts = analyze_results(jobs_list)
+    present_results(word_counts)
 
 def print_first_job(jobs_list):
 
@@ -107,9 +108,21 @@ def clean_snippet(title_snip_list):
 
 def analyze_results(jobs_list):
 
-    find_frequencies
+    all_job_words_generator = (jobs_list[job]['title_plus_snippet'] for job in jobs_list)
 
-    return term_frequencies
+    word_counts = Counter()
+
+    for word_list in all_job_words_generator:
+
+        word_counts += Counter(word_list)
+
+    return word_counts
+
+def present_results(word_counts):
+
+    for key in word_counts.most_common(100):
+
+        print(key[0] + ' ' + str(key[1]))
 
 if __name__ == '__main__':
     main()
